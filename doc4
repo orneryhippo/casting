@@ -1,0 +1,110 @@
+use $DatabaseName
+
+select * from INFORMATION_SCHEMA.TABLES
+TABLE_CATALOG (= $DatabaseName), TABLE_SCHEMA, TABLE_NAME, TABLE_TYPE (BASE TABLE or VIEW)
+
+select * from INFORMATION_SCHEMA.COLUMNS
+TABLE_CATALOG (= $DatabaseName),
+TABLE_SCHEMA
+TABLE_NAME
+COLUMN_NAME
+ORDINAL_POSITION
+IS_NULLABLE
+DATA_TYPE
+CHARACTER_MAXIMUM_LENGTH
+CHARACTER_OCTET_LENGTH
+NUMERIC_PRECISION
+NUMERIC_PRECISION_RADIX
+NUMERIC_SCALE
+DATETIME_PRECISION
+CHARACTER_SET_CATALOG
+CHARACTER_SET_SCHEMA
+CHARACTER_SET_NAME
+COLLATION_CATALOG
+COLLATION_SCHEMA
+COLLATION_NAME
+DOMAIN_CATALOG
+DOMAIN_SCHEMA
+DOMAIN_NAME
+
+
+
+select 
+ TABLE_SCHEMA
+,TABLE_NAME
+,COLUMN_NAME
+,ORDINAL_POSITION
+,IS_NULLABLE
+,DATA_TYPE
+,CHARACTER_MAXIMUM_LENGTH
+
+from INFORMATION_SCHEMA.COLUMNS
+GROUP BY 
+ TABLE_SCHEMA
+,TABLE_NAME
+,COLUMN_NAME
+,ORDINAL_POSITION
+,IS_NULLABLE
+,DATA_TYPE
+,CHARACTER_MAXIMUM_LENGTH
+
+for result in results
+	s = result[0]
+	t = result[1]
+	print("CREATE TABLE [{0}].[{1}] (".format(s, t))
+	for f in fields:
+		print()
+
+
+
+module parserto
+
+char_types = ['char','nchar','varchar','nvarchar']
+date_types = ['date','datetime']
+num_types = ['int','bigint','float','double','decimal']
+
+TABLE_SCHEMA = 0
+TABLE_NAME = 1
+COLUMN_NAME = 2
+ORDINAL_POSITION = 3
+IS_NULLABLE = 4
+DATA_TYPE = 5
+CHARACTER_MAXIMUM_LENGTH = 6
+NUMERIC_PRECISION = 7
+NUMERIC_SCALE = 8
+DATETIME_PRECISION = 9
+
+
+tcol = ['star','myTbl','MyTxtCol',1,'No','varCHar',10,None,None,None]
+ncol = ['star','myTbl','MyNumCol',2,'No','int',None,12,3,None]
+dcol = ['star','myTbl','MyDateCol',3,'No','date',None,None,None,3]
+
+def nullable(is_nullable):
+	return "NOT" if("NO" == is_nullable.upper()) else ""
+
+def r2char(r):
+	n = nullable(r[IS_NULLABLE])
+	c = r[COLUMN_NAME]
+	t = r[DATA_TYPE].lower()
+	l = r[CHARACTER_MAXIMUM_LENGTH]
+	return '[{0}] [{1}]({2}) {3} NULL'.format(c, t, l, n)
+
+
+def r2num(r):
+	n = nullable(r[IS_NULLABLE])
+	c = r[COLUMN_NAME]
+	t = r[DATA_TYPE].lower()
+	p = r[NUMERIC_PRECISION]
+	s = r[NUMERIC_SCALE]
+	return '[{0}] [{1}]({2},{3}) {4} NULL'.format(c, t, p, s, n)
+
+
+def sft_col(col):
+	other = ['bit','uniqueidentifier','xml']
+
+	t = col['type'].lower()	
+	if t in char_types:
+		return r2char(col)
+	if t in num_types:
+		return r2num(col)
+

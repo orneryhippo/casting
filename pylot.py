@@ -37,13 +37,13 @@ print( t,"super",sup)
 def get_prize(draw = 'powerball'):
 	if draw == 'powerball':
 		game = draw
-		txt = "Powerball"
+		txt = "Pball"
 	if draw == 'mega':
 		game = 'mega-millions'
-		txt = 'MegaMillions'
+		txt = 'Mega'
 	if draw == 'super':
 		game = 'superlotto-plus'
-		txt = "Superlotto"
+		txt = "Super"
 	page = requests.get('http://www.calottery.com/play/draw-games/' + game)
 	tree = html.fromstring(page.content)
 	prize = tree.xpath('//div[@class="heroContentBox drawGameHero"]/h2/text()')

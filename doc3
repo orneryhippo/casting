@@ -1,0 +1,28 @@
+project <name> # betterbiml
+	include, import, options, templates, constants, etc
+		add package <name>
+			use connection {k:v
+      			     		k:v
+      						...}
+
+paralleler
+
+sequencer
+
+iterator
+
+module <name>
+	fn-name (args, **args)
+
+
+with security {}
+	[closure]
+
+
+
+mapping = [ targets: [ target {t1 <- fn1(a,b,c)
+							   t2 <- fn2(a, c)
+							   t3 <- fn3(b,c,d,e)} ]]
+
+
+
