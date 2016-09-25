@@ -1,0 +1,37 @@
+sudo apt-get update
+
+sudo apt-get install apt-transport-https ca-certificates
+
+sudo apt-key adv --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys 58118E89F3A912897C070ADBF76221572C52609D
+
+sudo nano /etc/apt/sources.list.d/docker.list
+deb https://apt.dockerproject.org/repo ubuntu-trusty main
+^-O
+^-X
+
+
+sudo apt-get update
+
+sudo apt-get install linux-image-extra-$(uname -r)
+
+sudo apt-get update
+
+sudo apt-get install linux-image-generic-lts-trusty
+
+sudo reboot
+
+sudo apt-get update
+
+sudo apt-get install docker-engine
+
+sudo service docker start
+
+================
+sudo docker run --detach     --hostname gitlab.example.com     --publish 443:443 --publish 80:80 --publish 22:22     --name gitlab     --restart always     --volume /srv/gitlab/config:/etc/gitlab     --volume /srv/gitlab/logs:/var/log/gitlab     --volume /srv/gitlab/data:/var/opt/gitlab     gitlab/gitlab-ce:latest
+
+ docker run -d --hostname my-rabbit --name some-rabbit -p 8080:15672 rabbitmq:3-management
+
+
+ questions:
+ --detach or not?  detach, of course
+ --restart always for rabbit? yes
