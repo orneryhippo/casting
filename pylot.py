@@ -27,9 +27,9 @@ t = datetime.today().strftime("%Y-%m-%d")
 
 print( "Today is",  datetime.today().strftime("%A, %d %b %Y"))
 
-print( t,"pb",pb)
-print( t,"mega",mega)
-print( t,"super",sup)
+print( t,"p",pb)
+print( t,"m",mega)
+print( t,"s",sup)
 
 # write to the database...
 
@@ -37,17 +37,17 @@ print( t,"super",sup)
 def get_prize(draw = 'powerball'):
 	if draw == 'powerball':
 		game = draw
-		txt = "Pball"
+		txt = "p" # "Pball"
 	if draw == 'mega':
 		game = 'mega-millions'
-		txt = 'Mega'
+		txt = "m" # 'Mega'
 	if draw == 'super':
 		game = 'superlotto-plus'
-		txt = "Super"
+		txt = "s" # "Super"
 	page = requests.get('http://www.calottery.com/play/draw-games/' + game)
 	tree = html.fromstring(page.content)
 	prize = tree.xpath('//div[@class="heroContentBox drawGameHero"]/h2/text()')
-	return "Next " + txt + " prize: " + str(prize[0])
+	return "Next " + txt + " prize: " + str(prize[0]).split(" ")[0][1:] + "M"
 
 print(get_prize('powerball'))
 print( get_prize('mega'))
