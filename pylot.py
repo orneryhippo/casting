@@ -47,7 +47,7 @@ def get_prize(draw = 'powerball'):
 	page = requests.get('http://www.calottery.com/play/draw-games/' + game)
 	tree = html.fromstring(page.content)
 	prize = tree.xpath('//div[@class="heroContentBox drawGameHero"]/h2/text()')
-	return "Next " + txt + " prize: " + str(prize[0]).split(" ")[0][1:] + "M"
+	return "Next " + txt + ": " + str(prize[0]).split(" ")[0][1:] + "M"
 
 print(get_prize('powerball'))
 print( get_prize('mega'))
