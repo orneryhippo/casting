@@ -31,9 +31,6 @@ def parse_line(line):
 
     return [str(str(dt.tm_mon) + '/' + str(dt.tm_mday) + '/' + str(dt.tm_year)), 'game-' + str(ln)] + nums
 
-def cleanup(fname):
-    data_dir = '.\\data\\'
-    
 
 def mkcsv(fname):
     data_dir = '.\\data\\'
