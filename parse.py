@@ -3,6 +3,7 @@ from lxml import html
 import requests
 import time
 
+
 def get_file(which_file):
     data_dir = '.\\data\\'    
     url = 'http://www.calottery.com/sitecore/content/Miscellaneous/download-numbers/?GameName=' + which_file +'&Order=Yes'
@@ -10,11 +11,13 @@ def get_file(which_file):
     with open(data_dir + which_file + '.txt', 'wb') as pbf:
         pbf.write(resp.content)
 
+
 def parse_file(which_file):
     data_dir = '.\\data\\'    
     with open(data_dir + which_file + '.txt', 'rt', encoding='UTF-8') as raw_file:
         lines = raw_file.readlines()
     return lines
+
 
 def parse_line(line):
     ln_len = len(line[:5].strip())
@@ -28,16 +31,16 @@ def parse_line(line):
             next
         else:
             nums.append(int(n))
-
     return [str(str(dt.tm_mon) + '/' + str(dt.tm_mday) + '/' + str(dt.tm_year)), 'game-' + str(ln)] + nums
 
 
 def mkcsv(fname):
     data_dir = '.\\data\\'
+    hdr_size = -5
     get_file(fname)
     lines = list(reversed(parse_file(fname)))
     with open(data_dir + fname + '.csv', 'wt') as csvfile:
-        for line in lines[:-5]:
+        for line in lines[:hdr_size]:
             csvfile.write(",".join(list(map(str, parse_line(line)))))
             csvfile.write("\n")
 

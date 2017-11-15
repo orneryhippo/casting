@@ -19,6 +19,11 @@ pb =  wn[:6]
 mega = wn[6:12]
 sup = wn[12:18]
 
+# page = requests.get('http://www.calottery.com/play/draw-games/powerball')
+# page = requests.get('http://www.calottery.com/play/draw-games/superlotto-plus')
+# page = requests.get('http://www.calottery.com/play/draw-games/mega-millions')
+
+#'http://www.calottery.com/sitecore/content/Miscellaneous/download-numbers/?GameName=powerball&Order=Yes'
 #pb = map(int, wn[:6])
 #mega = map(int, wn[6:12])
 #sup = map(int, wn[12:18])
