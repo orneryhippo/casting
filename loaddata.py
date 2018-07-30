@@ -1,11 +1,11 @@
 import math
 import numpy as np
 import pandas as pd
-from math import cos, sin
+from math import cos, sin, sqrt,
 
 
 def yaw(xy):
-    m = [[0.0,0.0,0.0],[0.0,0.0,0.0],[0.0,0.0,0.0]]
+    m = np.zeros([3,3])
     m[0][0] = cos(xy)
     m[0][2] = sin(xy)
     m[2][0] = -sin(xy)
@@ -13,8 +13,9 @@ def yaw(xy):
     m[1][1] = 1
     return m
 
+
 def pitch(xz):
-    m = [[0.0,0.0,0.0],[0.0,0.0,0.0],[0.0,0.0,0.0]]
+    m = np.zeros([3,3])
     m[0][0] = 1
     m[1][1] = cos(xz)
     m[1][2] = sin(xz)
@@ -23,7 +24,7 @@ def pitch(xz):
     return m
 
 def roll(yz):
-    m = [[0.0,0.0,0.0],[0.0,0.0,0.0],[0.0,0.0,0.0]]
+    m = np.zeros([3,3])
     cyz = cos(yz)
     syz = sin(yz)
     m[0][0] = cyz
@@ -62,7 +63,7 @@ def rotn():
     psi = -45
     y = yaw(math.radians(phi))
     p = pitch(math.radians(psi))
-    return transpose(mmult(y,p))
+    return y@p
 
 def euc2(p1,p2=[0.0,0.0]):
     return length2(p1,p2)
@@ -85,19 +86,21 @@ def angle(x,y):
 # vector functions, vector(s) in, vector out
 #column U implied radial length
 def irl2(vect1):
-    vl = len(vect1)
-    result = []
-    for ndx in range(vl):
-        result.append(length2(vect1[ndx]))
-    return np.array(result)
+    # vl = len(vect1)
+    # result = []
+    # for ndx in range(vl):
+    #     result.append(euc2(vect1[ndx]))
+    # return np.array(result)
+    return np.array(list(map(euc2,vect1)))
 
 #called column S, implied circumferential length, pass in two refs to same vect, offset
 def icl2(vec1, vec2):
-    vl = min(len(vec1),len(vec2))
-    result = []
-    for ndx in range(vl):
-        result.append(length2(vec1[ndx],vec2[ndx]))
-    return np.array(result)
+    # vl = min(len(vec1),len(vec2))
+    # result = []
+    # for ndx in range(vl):
+    #     result.append(euc2(vec1[ndx],vec2[ndx]))
+    # return np.array(result)
+    return np.array(list(map(euc2,vec1,vec2)))
 
 
 def smu(vec1,vec2):
@@ -118,20 +121,26 @@ def load_data(fn ):
     game_data = pd.read_csv(fn, names=['Date','gm','b1', 'b2', 'b3', 'b4', 'b5','wc'])
     return game_data
 
-def adj_data(vec, scale=1):
-    #vec = mega['b1'][::-scale] #reverse order for diffing
-    x = np.diff(vec)
-    y = np.diff(x)
-    z = np.diff(y)
-    x = x[:len(z)] #truncate to same length
-    y = y[:len(z)]
-    rotmat = rotn()
-    xyz2 = np.zeros((len(z),3))
-    for i in range(len(z)):
-        xyz2[i][0] = innerprod([x[i],y[i],z[i]],rotmat[0])
-        xyz2[i][1] = innerprod([x[i],y[i],z[i]],rotmat[1])
-        xyz2[i][2] = innerprod([x[i],y[i],z[i]],rotmat[2])
+# def adj_data1(vec, scale=1):
+#     #vec = mega['b1'][::-scale] #reverse order for diffing
+#     x = np.diff(vec)
+#     y = np.diff(x)
+#     z = np.diff(y)
+#     x = x[:len(z)] #truncate to same length
+#     y = y[:len(z)]
+#     rotmat = rotn()
+#     xyz2 = np.zeros((len(z),3))
+#     for i in range(len(z)):
+#         xyz2[i][0] = innerprod([x[i],y[i],z[i]],rotmat[0])
+#         xyz2[i][1] = innerprod([x[i],y[i],z[i]],rotmat[1])
+#         xyz2[i][2] = innerprod([x[i],y[i],z[i]],rotmat[2])
+#     return xyz2
+
+def adj_data(vec):
+    rotmat=rotn()
+    xyz2 = rotmat @ np.array(vec).T
     return xyz2
+
 
 def raw_est(x,y,z, gm_max):
     rotmat = rotn()
@@ -149,20 +158,20 @@ def adj_est(x,y,z,gm_max):
         xyz2[i][1] = innerprod([est_x[i], est_y[i], est_z[i]], rotmat[1])
         xyz2[i][2] = innerprod([est_x[i], est_y[i], est_z[i]], rotmat[2])
     return xyz2
-
-def adj_est2(x,y,z,gm_max):
-    rotmat = rotn()
-    xyz3 = np.zeros((gm_max,3))
-    ex,ey,ez = raw_est(x,y,z,gm_max)
-    ez = -ex - ey
-    ey = -ex
-    ex = np.zeros((len(ey)))
-    #return [ex,ey,ez]
-    for i in range(gm_max):
-         xyz3[i][0] = innerprod([ex[i], ey[i], ez[i]], rotmat[0])
-         xyz3[i][1] = innerprod([ex[i], ey[i], ez[i]], rotmat[1])
-         xyz3[i][2] = innerprod([ex[i], ey[i], ez[i]], rotmat[2])
-    return xyz3
+#
+# def adj_est2(x,y,z,gm_max):
+#     rotmat = rotn()
+#     xyz3 = np.zeros((gm_max,3))
+#     ex,ey,ez = raw_est(x,y,z,gm_max)
+#     ez = -ex - ey
+#     ey = -ex
+#     ex = np.zeros((len(ey)))
+#     #return [ex,ey,ez]
+#     for i in range(gm_max):
+#          xyz3[i][0] = innerprod([ex[i], ey[i], ez[i]], rotmat[0])
+#          xyz3[i][1] = innerprod([ex[i], ey[i], ez[i]], rotmat[1])
+#          xyz3[i][2] = innerprod([ex[i], ey[i], ez[i]], rotmat[2])
+#     return xyz3
 
 def circum(x,y,z,gm_max):
     ae = adj_est(x,y,z,gm_max)
@@ -232,28 +241,6 @@ def absqminuss(x,y,z,gm_max):
     return np.array(result)
 
 
-#for the blue table
-def er0(x,y,z,gm_max):
-    ae = adj_est(x,y,z,gm_max)
-    r0 = length2(ae[0])
-    qms = qminuss1(x,y,z,gm_max)
-    rs = np.zeros(len(qms))
-    rs.fill(r0)
-    return qms - rs
-
-#for the red table
-def er1(x,y,z,x1,y1,z1,gm_max):
-    ae = adj_est(x,y,z,gm_max)
-    rm = rotn()
-    x2 = innerprod([x1,y1,z1],rm[0])
-    y2 = innerprod([x1,y1,z1],rm[1])
-    print(x2,y2)
-    u = length2([x2,y2])
-    print(u)
-    s = np.zeros(len(ae))
-    s.fill(u)
-    qms = qms1(x,y,z,x1,y1,z1,gm_max)
-    return (np.array(qms)-np.array(s))
 
 
 

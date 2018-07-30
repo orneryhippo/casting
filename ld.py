@@ -105,6 +105,7 @@ def magR3(vec):
     return np.array(list(map(euc,vec)))
 
 ##### for estimates ################################################
+# red box
 def est1(xf,yf,zf, gm = 70):
     x = np.arange(1-xf,gm+1-xf)
     y = x - yf
@@ -113,10 +114,13 @@ def est1(xf,yf,zf, gm = 70):
     return e1xyzp.T
     #e1xyzpr = e1xyzp @ rotn().T
     #return e1xyzpr
+
+# red box
 def est1r(xf,yf,zf, gm = 70):
     e1 = est1(xf,yf,zf, gm = 70)
     return e1 @ rotn().T
 
+# blue box
 def est2(e1):
     x = np.zeros(len(e1))
     y = x - e1.T[0]
@@ -126,6 +130,7 @@ def est2(e1):
     #e2xyzpr = e2xyzp @ rotn().T
     #return e2xyzpr
 
+# blue box
 def q1(j,k,e1):
     x = np.ones(len(e1))*j
     y = np.ones(len(e1))*k
@@ -133,6 +138,8 @@ def q1(j,k,e1):
     vec2 = np.vstack((x,y,z)).T
     e1a = e1 @ rotn().T
     return np.array(list(map(euc2,e1a,vec2)))
+
+
 
 def s1(e1):
     e1a = e1 @ rotn().T
