@@ -11,6 +11,8 @@
 # priorErr = impliedCircum - impliedRadial - prior(R2)
 # dAbs = redAbs - priorAbs
 # priorAbs = abs(lag(S,1)-lag(U,-1))
+cols = ['x','y','z',"x'","y'","z'","circumQ","radialS",
+        'err', 'abserr', 'dErr', 'priorErr','dAbs','priorAbs']
 def base_cols(r_1,x_1,y_1,gm_max):
     x = np.arange(1,gm_max+1)
     x -= r_1

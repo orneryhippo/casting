@@ -20,6 +20,9 @@
 # Abs(1/2(ERR-dERR))
 # abswav = abs(1/2(ABS+dABS))
 # looking for argmins of the x column on absfns
+cols = ['x','y','z',"x'","y'","z'","circumQ","radialS",
+        'err', 'abserr', 'dErr', 'priorErr','dAbs','priorAbs',
+        'absdabs', 'absderr', 'dEE', 'midErrdErr', 'absmdabs', 'abswav']
 
 def er0(x,y,z,gm_max):
     ae = adj_est(x,y,z,gm_max)
