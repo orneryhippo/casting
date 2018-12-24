@@ -57,3 +57,4 @@ def get_prize(draw = 'powerball'):
 print(get_prize('powerball'))
 print( get_prize('mega'))
 print( get_prize('super'))
+input("Press any key...")
